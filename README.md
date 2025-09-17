@@ -80,12 +80,12 @@ En esta fase se enfoca en **Setup + Settings**, rutas REST **scaffold** (prepara
 ```
 
 **Respuesta:**
-```json
+```bash
 { "ok": true, "received": true }
 ```
 
 **Ejemplo (firma HMAC con openssl):**
-```json
+```bash
 SECRET='REEMPLAZA_CON_TU_HMAC_SECRET'
 BODY='{"to":"1999999999","name":"hello_world","lang":"en_US","vars":["Nombre"]}'
 SIG=$(printf '%s' "$BODY" \
