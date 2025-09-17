@@ -123,7 +123,7 @@ curl -sS -X POST \
 - Activa WP_DEBUG_LOG para enviar a wp-content/debug.log.
 
 ## Mapa de archivos (resumen)
-```json
+```text
 /wp-content/plugins/7c-mwb
 ├── 7c-mwb.php
 ├── assets
