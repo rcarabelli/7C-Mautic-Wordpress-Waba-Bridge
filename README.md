@@ -72,3 +72,34 @@ Puente base entre **Mautic** y **WhatsApp Business API (WABA / Meta)**. En esta 
     "campaign": "encuesta_wa01a"
   }
 }
+
+/wp-content/plugins/7c-mwb
+├── 7c-mwb.php
+├── assets
+│   ├── admin.css
+│   └── admin.js
+├── includes
+│   └── class-rest-ingest.php    (legacy - migrar a src/REST)
+├── readme.md
+└── src
+    ├── Admin
+    │   ├── Menu.php
+    │   ├── SettingsPage.php
+    │   └── TemplateHelper.php
+    ├── Plugin.php
+    ├── REST
+    │   ├── Ingest_Controller.php
+    │   └── Waba_Status_Webhook.php
+    ├── Settings
+    │   ├── Defaults.php
+    │   ├── Keys.php
+    │   ├── Registry.php
+    │   └── Sanitizer.php
+    ├── Setup
+    │   └── Installer.php
+    ├── Util
+    │   ├── Arr.php
+    │   └── View.php
+    └── views
+        └── admin
+            └── settings-page.php
