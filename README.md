@@ -77,6 +77,7 @@ En esta fase se enfoca en **Setup + Settings**, rutas REST **scaffold** (prepara
     "campaign": "encuesta_wa01a"
   }
 }
+```
 
 **Respuesta:**
 ```json
