@@ -8,9 +8,9 @@ En esta fase se enfoca en **Setup + Settings**, rutas REST **scaffold** (prepara
 ## Datos del proyecto / autor
 - **Plugin**: 7C Mautic–WABA Bridge  
 - **Versión**: 0.1.0 (Fase 1)  
-- **Autor**: Joe Doe Corp — **Joe Doe**  
-- **Contacto**: <joe.doe@example.com>  
-- **Web**: https://example.com  
+- **Autor**: Renato Carabelli — **7 Cats Studio Corp**  
+- **Contacto**: <info@7catstudio.com>  
+- **Web**: https://www.7catstudio.com  
 - **Requiere**: WordPress ≥ 6.0, **PHP ≥ 8.1**  
 - **Licencia**: GPL-2.0-or-later (sugerido)
 
