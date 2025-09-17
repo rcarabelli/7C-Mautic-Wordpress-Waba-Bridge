@@ -82,3 +82,19 @@ En esta fase se enfoca en **Setup + Settings**, rutas REST **scaffold** (prepara
 **Respuesta:**
 ```json
 { "ok": true, "received": true }
+```
+
+**Ejemplo (firma HMAC con openssl):**
+```
+SECRET='REEMPLAZA_CON_TU_HMAC_SECRET'
+BODY='{"to":"1999999999","name":"hello_world","lang":"en_US","vars":["Nombre"]}'
+SIG=$(printf '%s' "$BODY" \
+  | openssl dgst -sha256 -mac HMAC -macopt key:"$SECRET" -binary \
+  | openssl base64)
+
+curl -sS -X POST \
+  'https://tu-dominio.tld/wp-json/7c-mwb/v1/waba-webhook' \
+  -H 'Content-Type: application/json' \
+  -H "X-7C-Signature: $SIG" \
+  -d "$BODY"
+```
