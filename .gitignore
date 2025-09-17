@@ -1,0 +1,23 @@
+# SO / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Paquetes / binarios
+*.zip
+*.tar
+*.gz
+
+# Logs / cache
+*.log
+cache/
+tmp/
+
+# Node/Composer (si se usan después)
+node_modules/
+vendor/
+
+# Entornos
+.env
+.env.*
