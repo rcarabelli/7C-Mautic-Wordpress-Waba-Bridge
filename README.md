@@ -1,6 +1,7 @@
 # 7C Mautic–WABA Bridge (Fase 1)
 
-Puente base entre **Mautic** y **WhatsApp Business API (WABA / Meta)**. En esta fase se enfoca en **Setup + Settings**, rutas REST **scaffold** (preparadas) y utilitarios para estandarizar la **ingesta** de mensajes (vía webhook) con **HMAC**.
+Puente base entre **Mautic** y **WhatsApp Business API (WABA / Meta)**.  
+En esta fase se enfoca en **Setup + Settings**, rutas REST **scaffold** (preparadas) y utilitarios para estandarizar la **ingesta** de mensajes (vía webhook) con **HMAC**.
 
 ---
 
@@ -22,7 +23,8 @@ Puente base entre **Mautic** y **WhatsApp Business API (WABA / Meta)**. En esta 
 - **Alcance**:
   - Pantalla de **Settings** (admin) con claves, defaults y sanitización.
   - **Installer** que asegura valores por defecto en la activación y upgrades.
-  - **Rutas REST scaffold** para **ingesta** (payload tipo Mautic → WABA) y **status** (WABA → WP). En Fase 1 se limitan a **validación, logging y respuesta estándar** (sin despachar a BSP todavía).
+  - **Rutas REST scaffold** para **ingesta** (payload tipo Mautic → WABA) y **status** (WABA → WP).  
+    En Fase 1 se limitan a **validación, logging y respuesta estándar** (sin despachar a BSP todavía).
 
 **Próximas fases**:
 1. **Ingest endpoint HMAC**: enrutar payload hacia BSP/Meta o cola interna.  
@@ -51,18 +53,21 @@ Puente base entre **Mautic** y **WhatsApp Business API (WABA / Meta)**. En esta 
 
 ## Endpoints REST (scaffold)
 
-> Las rutas REST pueden habilitarse/deshabilitarse por Settings. En Fase 1 registran, validan HMAC y **logean**.
+> Las rutas REST pueden habilitarse/deshabilitarse por Settings.  
+> En Fase 1 registran, validan HMAC y **logean**.
 
 ### 1) Ingesta (Mautic → WP)
 - **Método**: `POST`  
-- **Ruta**: `/wp-json/7c-mwb/v1/<INGEST_SLUG>` (por defecto `/wp-json/7c-mwb/v1/waba-webhook`)  
+- **Ruta**: `/wp-json/7c-mwb/v1/<INGEST_SLUG>`  
+  (por defecto `/wp-json/7c-mwb/v1/waba-webhook`)  
 - **Headers requeridos**:
   - `Content-Type: application/json`
   - `X-7C-Signature: <base64(hmac_sha256(raw_body, HMAC_SECRET))>`
-- **Body (JSON) sugerido**:
+
+**Body (JSON) sugerido:**
 ```json
 {
-  "to": "51956031565",
+  "to": "1999999999",
   "name": "hello_world",
   "lang": "en_US",
   "vars": ["Nombre"],
@@ -73,6 +78,58 @@ Puente base entre **Mautic** y **WhatsApp Business API (WABA / Meta)**. En esta 
   }
 }
 
+Respuesta:
+
+{ "ok": true, "received": true }
+
+
+Ejemplo (firma HMAC con openssl):
+
+SECRET='REEMPLAZA_CON_TU_HMAC_SECRET'
+BODY='{"to":"1999999999","name":"hello_world","lang":"en_US","vars":["Nombre"]}'
+SIG=$(printf '%s' "$BODY" \
+  | openssl dgst -sha256 -mac HMAC -macopt key:"$SECRET" -binary \
+  | openssl base64)
+
+curl -sS -X POST \
+  'https://tu-dominio.tld/wp-json/7c-mwb/v1/waba-webhook' \
+  -H 'Content-Type: application/json' \
+  -H "X-7C-Signature: $SIG" \
+  -d "$BODY"
+
+2) Status (WABA → WP)
+
+Método: POST
+
+Ruta: /wp-json/7c-mwb/v1/<STATUS_SLUG>
+(por defecto /wp-json/7c-mwb/v1/waba-status)
+
+Body: espejo del JSON de statuses de WABA/Meta (id, status, timestamp, conversation, pricing, etc.).
+
+Comportamiento: en Fase 1 se logea con prefijo [WABA STATUS RAW] (para auditoría), y responde:
+
+{ "ok": true }
+
+
+Tip: si usarás ambos webhooks en el mismo dominio, configura rutas con slugs claros para separarlos y facilitar la depuración.
+
+Seguridad
+
+Firmas HMAC: toda ingesta exige X-7C-Signature generada con HMAC_SHA256 del body crudo y secreto configurado.
+
+Sanitización: las opciones se validan en src/Settings/Sanitizer.php.
+
+Roles: el menú solo aparece a manage_options.
+
+Logging & Debug
+
+Prefijo de logs (PHP): [7C-MWB].
+
+En Fase 1, el status webhook imprime el JSON crudo con el prefijo [WABA STATUS RAW].
+
+Activa WP_DEBUG_LOG para enviar a wp-content/debug.log.
+
+Mapa de archivos (resumen)
 /wp-content/plugins/7c-mwb
 ├── 7c-mwb.php
 ├── assets
